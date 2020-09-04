@@ -44,7 +44,7 @@ resource "aws_alb" "app-balancer" {
   internal        = false
   enable_deletion_protection = true
   subnets         = ["${var.subnet_id}"]
-  vpc_security_group_ids = ["${var.security_group_id}"]
+  security_groups = ["${var.security_group_id}"]
   access_logs {
     bucket        = "mcm-test-s3"
   }
