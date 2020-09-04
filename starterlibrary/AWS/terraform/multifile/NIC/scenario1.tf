@@ -39,16 +39,14 @@ resource "aws_key_pair" "auth" {
     public_key = "${tls_private_key.ssh.public_key_openssh}"
 }
 
-resource "aws_alb" "app_balancer" {
-  name            = "app_balancer-alb"
+resource "aws_alb" "app-balancer" {
+  name            = "app-balancer-alb"
   internal        = false
   enable_deletion_protection = true
   subnets         = ["${var.subnet_id}"]
   vpc_security_group_ids = ["${var.security_group_id}"]
   access_logs {
-    bucket        = "foo"
-    bucket_prefix = "bar"
-    interval      = 60
+    bucket        = "mcm-test-s3"
   }
   tags {
     Environment = "production"
