@@ -11,25 +11,11 @@
 #
 #################################################################
 
+## REFERENCE {"aws_network":{"type": "aws_reference_network"}}
+
 provider "aws" {
   version = "~> 2.0"
   region  = "${var.aws_region}"
-}
-
-resource "aws_vpc" "default" {
-  cidr_block = "10.0.0.0/24"
-}
-
-resource "aws_subnet" "default" {
-  vpc_id                  = "${aws_vpc.default.id}"
-  cidr_block              = "10.0.0.0/24"
-  map_public_ip_on_launch = true
-}
-
-module "public_ssh_key" {
-  source         = "./ssh"
-  key_name       = "Orpheus Public Key"
-  public_ssh_key = "${var.public_ssh_key}"
 }
 
 resource "aws_instance" "webserver01" {
@@ -37,13 +23,8 @@ resource "aws_instance" "webserver01" {
   key_name = "${aws_key_pair.auth.id}"
   instance_type = "${var.webserver01_aws_instance_type}"
   availability_zone = "${var.availability_zone}"
+  subnet_id  = "${var.subnet_id}"
   vpc_security_group_ids = ["${var.security_group_id}"]
-  subnet_id  = "${aws_subnet.default.id}"
-  connection {
-    type = "ssh"
-    user = "${var.webserver01_connection_user}"
-    private_key = "${var.webserver01_connection_private_key}"
-  }
   tags {
     Name = "${var.webserver01_name}"
   }
@@ -58,22 +39,12 @@ resource "aws_key_pair" "auth" {
     public_key = "${tls_private_key.ssh.public_key_openssh}"
 }
 
-resource "aws_ebs_volume" "volume_webserver01" {
-    availability_zone = "${var.availability_zone}"
-    size              = "${var.volume_webserver01_volume_size}"
-}
-
-resource "aws_volume_attachment" "webserver01_volume_webserver01_volume_attachment" {
-  device_name = "/dev/sdh"
-  volume_id   = "${aws_ebs_volume.volume_webserver01.id}"
-  instance_id = "${aws_instance.webserver01.id}"
-}
-
 resource "aws_alb" "app_balancer" {
   name            = "app_balancer-alb"
   internal        = false
   enable_deletion_protection = true
-  subnets         = ["${aws_subnet.default.*.id}"]
+  subnets         = ["${var.subnet_id}"]
+  vpc_security_group_ids = ["${var.security_group_id}"]
   access_logs {
     bucket        = "foo"
     bucket_prefix = "bar"
@@ -82,5 +53,16 @@ resource "aws_alb" "app_balancer" {
   tags {
     Environment = "production"
   }
+}
+
+resource "aws_ebs_volume" "volume_webserver1" {
+    availability_zone = "${var.availability_zone}"
+    size              = "${var.volume_webserver1_volume_size}"
+}
+
+resource "aws_volume_attachment" "webserver01_volume_webserver1_volume_attachment" {
+  device_name = "/dev/sdh"
+  volume_id   = "${aws_ebs_volume.volume_webserver1.id}"
+  instance_id = "${aws_instance.webserver01.id}"
 }
 
