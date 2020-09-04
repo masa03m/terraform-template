@@ -18,9 +18,14 @@ provider "aws" {
   region  = "${var.aws_region}"
 }
 
+resource "aws_key_pair" "orpheus_public_key" {
+  key_name   = "${var.public_ssh_key_name}"
+  public_key = "${var.public_ssh_key}"
+}
+
 resource "aws_instance" "webserver01" {
   ami = "${var.webserver01_ami}"
-  key_name = "${aws_key_pair.auth.id}"
+  key_name      = "${aws_key_pair.orpheus_public_key.id}"
   instance_type = "${var.webserver01_aws_instance_type}"
   availability_zone = "${var.availability_zone}"
   subnet_id  = "${var.subnet_id}"
