@@ -43,7 +43,15 @@ resource "aws_alb" "app-balancer" {
   name            = "app-balancer-alb"
   internal        = false
   enable_deletion_protection = true
-  subnets         = ["${var.subnet_id}"]
+    subnet_mapping {
+    subnet_id     = "app-balancer-subnet1"
+    allocation_id = "subnet-0fcc80915848c7e1f"
+  }
+
+  subnet_mapping {
+    subnet_id     = "app-balancer-subnet2"
+    allocation_id = "subnet-0ad19fbd59cd5b0a4"
+  }
   security_groups = ["${var.security_group_id}"]
   access_logs {
     bucket        = "mcm-test-s3"

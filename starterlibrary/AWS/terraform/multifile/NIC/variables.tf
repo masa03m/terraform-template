@@ -41,13 +41,13 @@ variable "security_group_id" {
 
 variable "subnet_id" {
   type = "string"
-  default = "mcm-test-subnet"
+  default = "subnet-0fcc80915848c7e1f"
   description = "生成済み"
 }
 
 variable "volume_webserver1_volume_size" {
   type = "string"
-  default = "8GB"
+  default = "8"
   description = "生成済み"
 }
 
