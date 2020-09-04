@@ -43,6 +43,7 @@ resource "aws_alb" "app-balancer" {
   name            = "app-balancer-alb"
   internal        = false
   enable_deletion_protection = true
+  load_balancer_type         = "application"
     subnet_mapping {
     subnet_id     = "app-balancer-subnet1"
     allocation_id = "subnet-0fcc80915848c7e1f"

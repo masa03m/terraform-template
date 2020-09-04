@@ -5,7 +5,7 @@ variable "aws_region" {
 
 variable "webserver01_ami" {
   type = "string"
-  default    = "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200810"
+  default    = "ami-01c36f3329957b16a"
   description = "生成済み"
 }
 
