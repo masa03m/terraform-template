@@ -35,7 +35,7 @@ variable "aws_key_pair_name" {
 
 variable "security_group_id" {
   type = "string"
-  default = "mcm-test-sg"
+  default = "sg-0f1aa8d6a20c61bd3"
   description = "The associated security groups."
 }
 
