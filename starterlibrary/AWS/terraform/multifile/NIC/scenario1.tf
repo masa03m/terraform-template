@@ -54,7 +54,7 @@ resource "aws_lb" "alb" {
 }
 
 resource "aws_lb_target_group" "alb" {
-  arn      = aws_lb_target_group.alb.arn
+  arn      = "aws_lb_target_group.alb.arn"
   name     = "app-balancer-alb-target"
   port     = 80
   protocol = "HTTP"
@@ -69,12 +69,6 @@ resource "aws_lb_target_group" "alb" {
     unhealthy_threshold = 2
     matcher             = 200
   }
-}
-
-resource "aws_lb_target_group_attachment" "alb" {
-  target_group_arn = aws_lb_target_group.alb.arn
-  target_id        = aws_instance.webserver.id
-  port             = 80
 }
 
 resource "aws_lb_listener" "alb" {
@@ -93,6 +87,12 @@ resource "aws_lb_listener" "alb" {
 #  listener_arn    = aws_lb_listener.front_end.arn
 #  certificate_arn = aws_acm_certificate.example.arn
 #}
+
+resource "aws_lb_target_group_attachment" "alb" {
+  target_group_arn = aws_lb_target_group.alb.arn
+  target_id        = aws_instance.webserver.id
+  port             = 80
+}
 
 resource "aws_ebs_volume" "volume_webserver" {
     availability_zone = "${var.availability_zone}"
