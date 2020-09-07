@@ -54,7 +54,6 @@ resource "aws_lb" "alb" {
 }
 
 resource "aws_lb_target_group" "alb" {
-  arn      = "aws_lb_target_group.alb.arn"
   name     = "app-balancer-alb-target"
   port     = 80
   protocol = "HTTP"
@@ -72,14 +71,14 @@ resource "aws_lb_target_group" "alb" {
 }
 
 resource "aws_lb_listener" "alb" {
-  load_balancer_arn = aws_lb.alb.arn
+  load_balancer_arn = "${aws_lb.alb.arn}"
   port              = "80"
   protocol          = "HTTP"
 #  ssl_policy        = "ELBSecurityPolicy-2016-08"
 #  certificate_arn   = "${aws_lb_listener_certificate.alb.arn}"
   default_action {
     type            = "forward"
-    target_group_arn = aws_lb_target_group.alb.arn
+    target_group_arn = "${aws_lb_target_group.alb.arn}"
   }
 }
 
@@ -89,8 +88,8 @@ resource "aws_lb_listener" "alb" {
 #}
 
 resource "aws_lb_target_group_attachment" "alb" {
-  target_group_arn = aws_lb_target_group.alb.arn
-  target_id        = aws_instance.webserver.id
+  target_group_arn = "${aws_lb_target_group.alb.arn}"
+  target_id        = "${aws_instance.webserver.id}"
   port             = 80
 }
 
