@@ -70,7 +70,7 @@ resource "aws_alb_target_group" "alb" {
 }
 
 resource "aws_alb_target_group_attachment" "alb" {
-  target_group_arn = "${element(aws_alb_target_group.alb.*.arn, count.index)}"
+  target_group_arn = "${element(aws_alb_target_group.alb.arn}"
   target_id        = "${aws_instance.webserver.id}"
   port             = 80
 }
