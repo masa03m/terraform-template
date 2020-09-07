@@ -103,24 +103,5 @@ resource "aws_volume_attachment" "webserver_volume_webserver_volume_attachment" 
   instance_id = "${aws_instance.webserver.id}"
 }
 
-resource "aws_s3_bucket_policy" "alb_log" {
-  bucket = "mcm-test-s3"
-  policy = data.aws_iam_policy_document.alb_log.json
-}
-
-data "aws_iam_policy_document" "alb_log" {
-  statement {
-    effect    = "Allow"
-    actions   = ["s3:PutObject"]
-    resources = ["arn:aws:s3:::mcm-test-s3"]
-
-    // The identifiers is the account ID. This is not your AWS account ID.
-    // https://docs.aws.amazon.com/ja_jp/elasticloadbalancing/latest/classic/enable-access-logs.html
-    principals {
-      type        = "AWS"
-      identifiers = ["582318560864"]
-    }
-  }
-}
 
 
