@@ -42,11 +42,11 @@ resource "aws_alb" "alb" {
   enable_deletion_protection = false
   subnets                    = ["subnet-0fcc80915848c7e1f","subnet-0ad19fbd59cd5b0a4"]
   security_groups            = ["${var.security_group_id}"]
-  access_logs {
-    bucket  = "mcm-test-s3"
-    prefix  = "app-balancer"
-    enabled = true
-  }
+#  access_logs {
+#    bucket  = "mcm-test-s3"
+#    prefix  = "app-balancer"
+#    enabled = true
+#  }
   tags {
     Environment = "production"
   }
@@ -56,7 +56,7 @@ resource "aws_alb_target_group" "alb" {
   name     = "app-balancer-alb-target"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = "${var.security_group_id}"
+  vpc_id   = "${var.vpc_id}"
 
   health_check {
     interval            = 30

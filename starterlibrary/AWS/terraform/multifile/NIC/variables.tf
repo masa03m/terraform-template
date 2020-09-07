@@ -33,6 +33,12 @@ variable "security_group_id" {
   description = "The associated security groups."
 }
 
+variable "vpc_id" {
+  type = "string"
+  default = "vpc-0bfaa14e56fb3fcf5"
+  description = "生成済み"
+}
+
 variable "subnet_id" {
   type = "string"
   default = "subnet-0fcc80915848c7e1f"
