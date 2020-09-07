@@ -54,6 +54,7 @@ resource "aws_lb" "alb" {
 }
 
 resource "aws_lb_target_group" "alb" {
+  arn      = aws_lb_target_group.alb.arn
   name     = "app-balancer-alb-target"
   port     = 80
   protocol = "HTTP"
