@@ -94,7 +94,7 @@ resource "aws_lb_listener_certificate" "alb" {
 
 resource "aws_ebs_volume" "volume_webserver" {
     availability_zone = "${var.availability_zone}"
-    size              = "${var.volume_webserver1_volume_size}"
+    size              = "${var.volume_webserver_volume_size}"
 }
 
 resource "aws_volume_attachment" "webserver_volume_webserver_volume_attachment" {

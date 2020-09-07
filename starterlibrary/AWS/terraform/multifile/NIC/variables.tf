@@ -39,7 +39,7 @@ variable "subnet_id" {
   description = "生成済み"
 }
 
-variable "volume_webserver1_volume_size" {
+variable "volume_webserver_volume_size" {
   type = "string"
   default = "8"
   description = "生成済み"
@@ -52,7 +52,5 @@ variable "public_ssh_key_name" {
 variable "public_ssh_key" {
   description = "Public SSH key used to connect to the virtual guest"
 }
-
-
 
 # Ubuntu 14.04.01 as documented at https://cloud-images.ubuntu.com/releases/14.04/14.04.1/
