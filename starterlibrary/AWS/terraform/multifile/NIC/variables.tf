@@ -55,8 +55,8 @@ variable "public_ssh_key_name" {
   description = "Name of the public SSH key used to connect to the virtual guest"
 }
 
-variable "public_ssh_key" {
-  description = "Public SSH key used to connect to the virtual guest"
-}
+#variable "public_ssh_key" {
+#  description = "Public SSH key used to connect to the virtual guest"
+#}
 
 # Ubuntu 14.04.01 as documented at https://cloud-images.ubuntu.com/releases/14.04/14.04.1/
