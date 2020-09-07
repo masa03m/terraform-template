@@ -3,13 +3,13 @@ variable "aws_region" {
   default     = "ap-northeast-1"
 }
 
-variable "webserver01_ami" {
+variable "webserver_ami" {
   type = "string"
   default    = "ami-01c36f3329957b16a"
   description = "生成済み"
 }
 
-variable "webserver01_aws_instance_type" {
+variable "webserver_aws_instance_type" {
   type = "string"
   default = "t2.small"
   description = "生成済み"
@@ -21,15 +21,9 @@ variable "availability_zone" {
   description = "生成済み"
 }
 
-variable "webserver01_name" {
+variable "webserver_name" {
   type = "string"
   default     = "webserver01"
-  description = "生成済み"
-}
-
-variable "aws_key_pair_name" {
-  type = "string"
-  default     = "nic-mori"
   description = "生成済み"
 }
 
@@ -58,6 +52,7 @@ variable "public_ssh_key_name" {
 variable "public_ssh_key" {
   description = "Public SSH key used to connect to the virtual guest"
 }
+
 
 
 # Ubuntu 14.04.01 as documented at https://cloud-images.ubuntu.com/releases/14.04/14.04.1/

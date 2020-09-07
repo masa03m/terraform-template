@@ -23,28 +23,19 @@ resource "aws_key_pair" "orpheus_public_key" {
   public_key = "${var.public_ssh_key}"
 }
 
-resource "aws_instance" "webserver01" {
-  ami = "${var.webserver01_ami}"
+resource "aws_instance" "webserver" {
+  ami           = "${var.webserver_ami}"
   key_name      = "${aws_key_pair.orpheus_public_key.id}"
-  instance_type = "${var.webserver01_aws_instance_type}"
+  instance_type = "${var.webserver_aws_instance_type}"
   availability_zone = "${var.availability_zone}"
   subnet_id  = "${var.subnet_id}"
   vpc_security_group_ids = ["${var.security_group_id}"]
   tags {
-    Name = "${var.webserver01_name}"
+    Name = "${var.webserver_name}"
   }
 }
 
-resource "tls_private_key" "ssh" {
-    algorithm = "RSA"
-}
-
-resource "aws_key_pair" "auth" {
-    key_name = "${var.aws_key_pair_name}"
-    public_key = "${tls_private_key.ssh.public_key_openssh}"
-}
-
-resource "aws_alb" "app-balancer" {
+resource "aws_alb" "alb" {
   name                       = "app-balancer-alb"
   internal                   = false
   load_balancer_type         = "application"
@@ -61,14 +52,58 @@ resource "aws_alb" "app-balancer" {
   }
 }
 
-resource "aws_ebs_volume" "volume_webserver1" {
+resource "aws_alb_target_group" "alb" {
+  name     = "app-balancer-alb-target"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = "${var.security_group_id}"
+
+  health_check {
+    interval            = 30
+    path                = "/index.html"
+    port                = 80
+    protocol            = "HTTP"
+    timeout             = 5
+    unhealthy_threshold = 2
+    matcher             = 200
+  }
+}
+
+resource "aws_alb_target_group_attachment" "alb" {
+  target_group_arn = "${element(aws_alb_target_group.alb.*.arn, count.index)}"
+  target_id        = "${element{aws_instance.webserver.id}", count.index)}"
+  port             = 80
+}
+
+resource "aws_alb_listener" "alb" {
+  load_balancer_arn = "${aws_alb.alb.arn}"
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "${aws_lb_listener_certificate.alb.arn}"
+  default_action {
+    type            = "forward"
+    target_group_arn = "aws_alb_target_group.alb.arn"
+  }
+}
+
+resource "aws_lb_listener_certificate" "alb" {
+  listener_arn    = aws_lb_listener.front_end.arn
+  certificate_arn = aws_acm_certificate.example.arn
+}
+
+resource "aws_ebs_volume" "volume_webserver" {
     availability_zone = "${var.availability_zone}"
     size              = "${var.volume_webserver1_volume_size}"
 }
 
-resource "aws_volume_attachment" "webserver01_volume_webserver1_volume_attachment" {
+resource "aws_volume_attachment" "webserver_volume_webserver_volume_attachment" {
   device_name = "/dev/sdh"
-  volume_id   = "${aws_ebs_volume.volume_webserver1.id}"
-  instance_id = "${aws_instance.webserver01.id}"
+  volume_id   = "${aws_ebs_volume.volume_webserver.id}"
+  instance_id = "${aws_instance.webserver.id}"
+}
+
+resource "tls_private_key" "ssh" {
+    algorithm = "RSA"
 }
 
