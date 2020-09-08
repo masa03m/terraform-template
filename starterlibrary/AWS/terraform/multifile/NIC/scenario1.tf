@@ -24,25 +24,27 @@ provider "aws" {
 #}
 
 resource "aws_instance" "webserver" {
-  ami           = "${var.webserver_ami}"
-#  key_name      = "${aws_key_pair.orpheus_public_key.id}"
-  key_name      = "${var.public_ssh_key_name}"
-  instance_type = "${var.webserver_aws_instance_type}"
+  ami               = "${var.webserver_ami}"
+#  key_name          = "${aws_key_pair.orpheus_public_key.id}"
+  key_name          = "${var.public_ssh_key_name}"
+  instance_type     = "${var.webserver_aws_instance_type}"
   availability_zone = "${var.availability_zone}"
-  subnet_id  = "${var.subnet_id01}"
+  subnet_id         = "${var.subnet_id01}"
   vpc_security_group_ids = ["${var.security_group_id}"]
   tags {
-    name = "${var.system_tag}:${var.webserver_name}"
+    name            = "${var.system_tag}-${var.webserver_name}"
   }
 }
 
 resource "aws_eip" "ip" {
-    name     = "${var.system_tag}:${var.webserver_name}-eip"
     instance = "${aws_instance.webserver.id}"
+    tags {
+    name     = "${var.system_tag}-${var.webserver_name}-eip"
+  }
 }
 
 resource "aws_alb" "alb" {
-  name                       = "${var.system_tag}:applb"
+  name                       = "${var.system_tag}-applb"
   internal                   = false
   load_balancer_type         = "application"
   enable_deletion_protection = false
@@ -59,7 +61,7 @@ resource "aws_alb" "alb" {
 }
 
 resource "aws_alb_target_group" "alb" {
-  name     = "${var.system_tag}:applb-target-group"
+  name     = "${var.system_tag}-applb-target-group"
   port     = 80
   protocol = "HTTP"
   vpc_id   = "${var.vpc_id}"
@@ -99,9 +101,11 @@ resource "aws_alb_target_group_attachment" "alb" {
 }
 
 resource "aws_ebs_volume" "volume_webserver" {
-    name              = "${var.system_tag}:${var.webserver_name}-vol"
     availability_zone = "${var.availability_zone}"
     size              = "${var.volume_webserver_volume_size}"
+    tags {
+      name            = "${var.system_tag}-${var.webserver_name}-vol"
+  }
 }
 
 resource "aws_volume_attachment" "webserver_volume_webserver_volume_attachment" {
