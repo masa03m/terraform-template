@@ -1,3 +1,9 @@
+variable "system_tag" {
+  description = "システムの識別子 初期値：webapp001"
+  default     = "webapp001"
+}
+
+
 variable "aws_region" {
   description = "AWS region to launch servers. Default：ap-northeast-1"
   default     = "ap-northeast-1"
