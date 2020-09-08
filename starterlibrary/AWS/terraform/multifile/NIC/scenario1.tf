@@ -29,19 +29,23 @@ resource "aws_instance" "webserver" {
   key_name      = "${var.public_ssh_key_name}"
   instance_type = "${var.webserver_aws_instance_type}"
   availability_zone = "${var.availability_zone}"
-  subnet_id  = "${var.subnet_id}"
+  subnet_id  = "${var.subnet_id01}"
   vpc_security_group_ids = ["${var.security_group_id}"]
   tags {
     Name = "${var.webserver_name}"
   }
 }
 
-resource "aws_lb" "alb" {
+resource "aws_eip" "ip" {
+    instance = "${aws_instance.webserver.id}"
+}
+
+resource "aws_alb" "alb" {
   name                       = "app-balancer-alb"
   internal                   = false
   load_balancer_type         = "application"
   enable_deletion_protection = false
-  subnets                    = ["subnet-0fcc80915848c7e1f","subnet-0ad19fbd59cd5b0a4"]
+  subnets                    = ["${var.subnet_id01}","${var.subnet_id02}"]
   security_groups            = ["${var.security_group_id}"]
 #  access_logs {
 #    bucket  = "mcm-test-s3"
@@ -53,7 +57,7 @@ resource "aws_lb" "alb" {
   }
 }
 
-resource "aws_lb_target_group" "alb" {
+resource "aws_alb_target_group" "alb" {
   name     = "app-balancer-alb-target"
   port     = 80
   protocol = "HTTP"
@@ -70,15 +74,15 @@ resource "aws_lb_target_group" "alb" {
   }
 }
 
-resource "aws_lb_listener" "alb" {
-  load_balancer_arn = "${aws_lb.alb.arn}"
+resource "aws_alb_listener" "alb" {
+  load_balancer_arn = "${aws_alb.alb.arn}"
   port              = "80"
   protocol          = "HTTP"
 #  ssl_policy        = "ELBSecurityPolicy-2016-08"
 #  certificate_arn   = "${aws_lb_listener_certificate.alb.arn}"
   default_action {
     type            = "forward"
-    target_group_arn = "${aws_lb_target_group.alb.arn}"
+    target_group_arn = "${aws_alb_target_group.alb.arn}"
   }
 }
 
@@ -87,8 +91,8 @@ resource "aws_lb_listener" "alb" {
 #  certificate_arn = aws_acm_certificate.example.arn
 #}
 
-resource "aws_lb_target_group_attachment" "alb" {
-  target_group_arn = "${aws_lb_target_group.alb.arn}"
+resource "aws_alb_target_group_attachment" "alb" {
+  target_group_arn = "${aws_alb_target_group.alb.arn}"
   target_id        = "${aws_instance.webserver.id}"
   port             = 80
 }
