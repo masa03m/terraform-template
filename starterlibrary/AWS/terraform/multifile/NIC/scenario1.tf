@@ -32,14 +32,14 @@ resource "aws_instance" "webserver" {
   subnet_id         = "${var.subnet_id01}"
   vpc_security_group_ids = ["${var.security_group_id}"]
   tags {
-    name            = "${var.webserver_name}"
+    Name            = "${var.webserver_name}"
   }
 }
 
 resource "aws_eip" "ip" {
     instance = "${aws_instance.webserver.id}"
     tags {
-    name     = "${var.system_tag}-${var.webserver_name}-eip"
+    Name     = "${var.system_tag}-${var.webserver_name}-eip"
   }
 }
 
@@ -104,7 +104,7 @@ resource "aws_ebs_volume" "volume_webserver" {
     availability_zone = "${var.availability_zone}"
     size              = "${var.volume_webserver_volume_size}"
     tags {
-      name            = "${var.system_tag}-${var.webserver_name}-vol"
+      Name            = "${var.system_tag}-${var.webserver_name}-vol"
   }
 }
 
