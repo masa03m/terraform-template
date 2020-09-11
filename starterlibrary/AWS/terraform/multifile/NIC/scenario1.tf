@@ -32,7 +32,7 @@ resource "aws_instance" "webserver" {
   subnet_id         = "${var.subnet_id01}"
   vpc_security_group_ids = ["${var.security_group_id}"]
   tags {
-    name            = "${var.system_tag}-${var.webserver_name}"
+    name            = "${var.webserver_name}"
   }
 }
 
