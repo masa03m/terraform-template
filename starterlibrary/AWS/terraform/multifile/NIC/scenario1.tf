@@ -23,7 +23,7 @@ provider "aws" {
 #  public_key = "${var.public_ssh_key}"
 #}
 
-resource "aws_instance" "webserver" {
+resource "aws_instance" "webserver01" {
   ami               = "${var.webserver_ami}"
 #  key_name          = "${aws_key_pair.orpheus_public_key.id}"
   key_name          = "${var.public_ssh_key_name}"
@@ -32,14 +32,34 @@ resource "aws_instance" "webserver" {
   subnet_id         = "${var.subnet_id01}"
   vpc_security_group_ids = ["${var.security_group_id}"]
   tags {
-    Name            = "${var.webserver_name}"
+    Name            = "${var.webserver_name}01"
   }
 }
 
-resource "aws_eip" "ip" {
-    instance = "${aws_instance.webserver.id}"
+resource "aws_eip" "ip01" {
+    instance = "${aws_instance.webserver01.id}"
     tags {
-    Name     = "${var.system_tag}-${var.webserver_name}-eip"
+    Name     = "${var.system_tag}-${var.webserver_name}01-eip"
+  }
+}
+
+resource "aws_instance" "webserver02" {
+  ami               = "${var.webserver_ami}"
+#  key_name          = "${aws_key_pair.orpheus_public_key.id}"
+  key_name          = "${var.public_ssh_key_name}"
+  instance_type     = "${var.webserver_aws_instance_type}"
+  availability_zone = "${var.availability_zone}"
+  subnet_id         = "${var.subnet_id02}"
+  vpc_security_group_ids = ["${var.security_group_id}"]
+  tags {
+    Name            = "${var.webserver_name}01"
+  }
+}
+
+resource "aws_eip" "ip02" {
+    instance = "${aws_instance.webserver02.id}"
+    tags {
+    Name     = "${var.system_tag}-${var.webserver_name}02-eip"
   }
 }
 
@@ -96,23 +116,36 @@ resource "aws_alb_listener" "alb" {
 
 resource "aws_alb_target_group_attachment" "alb" {
   target_group_arn = "${aws_alb_target_group.alb.arn}"
-  target_id        = "${aws_instance.webserver.id}"
+  target_id        = "[${aws_instance.webserver01.id},${aws_instance.webserver02.id}]"
   port             = 80
 }
 
-resource "aws_ebs_volume" "volume_webserver" {
+resource "aws_ebs_volume" "volume_webserver01" {
     availability_zone = "${var.availability_zone}"
     size              = "${var.volume_webserver_volume_size}"
     tags {
-      Name            = "${var.system_tag}-${var.webserver_name}-vol"
+      Name            = "${var.system_tag}-${var.webserver_name}01-vol"
   }
 }
 
-resource "aws_volume_attachment" "webserver_volume_webserver_volume_attachment" {
+resource "aws_volume_attachment" "webserver_volume_webserver01_volume_attachment" {
   device_name = "/dev/sdh"
-  volume_id   = "${aws_ebs_volume.volume_webserver.id}"
-  instance_id = "${aws_instance.webserver.id}"
+  volume_id   = "${aws_ebs_volume.volume_webserver01.id}"
+  instance_id = "${aws_instance.webserver01.id}"
 }
 
+resource "aws_ebs_volume" "volume_webserver02" {
+    availability_zone = "${var.availability_zone}"
+    size              = "${var.volume_webserver_volume_size}"
+    tags {
+      Name            = "${var.system_tag}-${var.webserver_name}02-vol"
+  }
+}
+
+resource "aws_volume_attachment" "webserver_volume_webserver02_volume_attachment" {
+  device_name = "/dev/sdh"
+  volume_id   = "${aws_ebs_volume.volume_webserver02.id}"
+  instance_id = "${aws_instance.webserver02.id}"
+}
 
 
