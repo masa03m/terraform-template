@@ -114,16 +114,17 @@ resource "aws_alb_listener" "alb" {
 #  certificate_arn = aws_acm_certificate.example.arn
 #}
 
-variable "instance_list" {
-  type = "list"
-  default = ["${aws_instance.webserver01.id}","${aws_instance.webserver02.id}"]
-  description = "ALBに紐づけるインスタンスリスト"
+locals {
+  instance_list = [
+    { "value" = "${aws_instance.webserver01.id}" },
+    { "value" = "${aws_instance.webserver02.id}" }
+  ]
 }
 
 resource "aws_alb_target_group_attachment" "alb" {
-  count            = "${var.instance_list}"
+  count            = "${local.instance_list}"
   target_group_arn = "${aws_alb_target_group.alb.arn}"
-  target_id        = "${element(var.instance_list, count.index)}"
+  target_id        = "${element(local.instance_list, count.index)}"
   port             = 80
 }
 
