@@ -115,7 +115,7 @@ resource "aws_alb_listener" "alb" {
 #}
 
 locals {
-  instance_list = ["${aws_instance.webserver01.id}","${aws_instance.webserver02.id}"]
+  instance_list = "[${aws_instance.webserver01.id},${aws_instance.webserver02.id}]"
 }
 
 resource "aws_alb_target_group_attachment" "alb" {
