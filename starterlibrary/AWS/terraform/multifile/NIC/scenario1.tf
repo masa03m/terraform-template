@@ -115,6 +115,7 @@ resource "aws_alb_listener" "alb" {
 #}
 
 resource "aws_alb_target_group_attachment" "alb" {
+  count            = "${var.instance_list}"
   target_group_arn = "${aws_alb_target_group.alb.arn}"
   target_id        = "${element(var.instance_list, count.index)}"
   port             = 80
