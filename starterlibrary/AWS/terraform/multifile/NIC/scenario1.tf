@@ -116,15 +116,15 @@ resource "aws_alb_listener" "alb" {
 
 locals {
   instance_list = [
-    { "value" = "${aws_instance.webserver01.id}" },
-    { "value" = "${aws_instance.webserver02.id}" }
+    "${aws_instance.webserver01.id}",
+    "${aws_instance.webserver02.id}"
   ]
 }
 
 resource "aws_alb_target_group_attachment" "alb" {
-  count            = "${local.instance_list}"
+  count            = "${length(instance_list)}"
   target_group_arn = "${aws_alb_target_group.alb.arn}"
-  target_id        = "${element(local.instance_list, count.index)}"
+  target_id        = "${local.instance_list[count.index]}"
   port             = 80
 }
 
