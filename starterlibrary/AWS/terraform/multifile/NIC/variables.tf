@@ -1,6 +1,6 @@
 variable "system_tag" {
-  description = "システムの識別子 初期値：webapp001"
-  default     = "webapp001"
+  description = "システムの識別子 初期値：WebSysXX"
+  default     = "WebSys"
 }
 
 
@@ -19,14 +19,20 @@ variable "webserver_aws_instance_type" {
   description = "インスタンスタイプ 初期値：t2.small"
 }
 
-variable "availability_zone" {
+variable "availability_zone01" {
   default     = "ap-northeast-1a"
   description = "アベイラビリティゾーン 初期値：ap-northeast-1a"
 }
 
+variable "availability_zone02" {
+  default     = "ap-northeast-1c"
+  description = "アベイラビリティゾーン 初期値：ap-northeast-1c"
+}
+
+
 variable "webserver_name" {
-  default     = "webserver01"
-  description = "インスタンス名 初期値：webserverXX"
+  default     = "Webserver"
+  description = "インスタンス名 初期値：WebserverXX"
 }
 
 variable "security_group_id" {

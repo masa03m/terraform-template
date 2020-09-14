@@ -28,7 +28,7 @@ resource "aws_instance" "webserver01" {
 #  key_name          = "${aws_key_pair.orpheus_public_key.id}"
   key_name          = "${var.public_ssh_key_name}"
   instance_type     = "${var.webserver_aws_instance_type}"
-  availability_zone = "${var.availability_zone}"
+  availability_zone = "${var.availability_zone01}"
   subnet_id         = "${var.subnet_id01}"
   vpc_security_group_ids = ["${var.security_group_id}"]
   tags {
@@ -48,11 +48,11 @@ resource "aws_instance" "webserver02" {
 #  key_name          = "${aws_key_pair.orpheus_public_key.id}"
   key_name          = "${var.public_ssh_key_name}"
   instance_type     = "${var.webserver_aws_instance_type}"
-  availability_zone = "${var.availability_zone}"
+  availability_zone = "${var.availability_zone02}"
   subnet_id         = "${var.subnet_id02}"
   vpc_security_group_ids = ["${var.security_group_id}"]
   tags {
-    Name            = "${var.webserver_name}01"
+    Name            = "${var.webserver_name}02"
   }
 }
 
@@ -70,11 +70,11 @@ resource "aws_alb" "alb" {
   enable_deletion_protection = false
   subnets                    = ["${var.subnet_id01}","${var.subnet_id02}"]
   security_groups            = ["${var.security_group_id}"]
-#  access_logs {
-#    bucket  = "mcm-test-s3"
-#    prefix  = "app-balancer"
-#    enabled = true
-#  }
+  access_logs {
+    bucket  = "mcm-test-s3"
+    prefix  = "app-balancer"
+    enabled = true
+  }
   tags {
     Environment = "production"
   }
@@ -121,7 +121,7 @@ resource "aws_alb_target_group_attachment" "alb" {
 }
 
 resource "aws_ebs_volume" "volume_webserver01" {
-    availability_zone = "${var.availability_zone}"
+    availability_zone = "${var.availability_zone01}"
     size              = "${var.volume_webserver_volume_size}"
     tags {
       Name            = "${var.system_tag}-${var.webserver_name}01-vol"
@@ -135,7 +135,7 @@ resource "aws_volume_attachment" "webserver_volume_webserver01_volume_attachment
 }
 
 resource "aws_ebs_volume" "volume_webserver02" {
-    availability_zone = "${var.availability_zone}"
+    availability_zone = "${var.availability_zone02}"
     size              = "${var.volume_webserver_volume_size}"
     tags {
       Name            = "${var.system_tag}-${var.webserver_name}02-vol"
