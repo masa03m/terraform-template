@@ -114,12 +114,6 @@ resource "aws_alb_listener" "alb" {
 #  certificate_arn = aws_acm_certificate.example.arn
 #}
 
-variable "instance_list" { 
-    description = "Push these instances to ALB" 
-    type = "list" 
-    default = ["${aws_instance.webserver01.id}","${aws_instance.webserver02.id}"] 
-}
-
 resource "aws_alb_target_group_attachment" "alb" {
   target_group_arn = "${aws_alb_target_group.alb.arn}"
   target_id        = "${element(var.instance_list, count.index)}"

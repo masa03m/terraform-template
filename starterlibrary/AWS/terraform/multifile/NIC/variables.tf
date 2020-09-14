@@ -41,7 +41,6 @@ variable "security_group_id" {
 }
 
 variable "vpc_id" {
-  type = "string"
   default = "vpc-0bfaa14e56fb3fcf5"
   description = "VPC 初期値：vpc-0bfaa14e56fb3fcf5"
 }
@@ -64,6 +63,13 @@ variable "volume_webserver_volume_size" {
 variable "public_ssh_key_name" {
   description = "Name of the public SSH key used to connect to the virtual guest. Default：mcm-test-key"
   default = "mcm-test-key"
+}
+
+variable "instance_list" {
+  type = "list"
+  default = ["${aws_instance.webserver01.id}","${aws_instance.webserver02.id}"]
+  description = "Push these instances to ALB"
+  hidden = "true"
 }
 
 #variable "public_ssh_key" {
