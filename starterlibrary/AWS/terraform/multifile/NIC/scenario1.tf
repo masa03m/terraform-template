@@ -114,18 +114,30 @@ resource "aws_alb_listener" "alb" {
 #  certificate_arn = aws_acm_certificate.example.arn
 #}
 
-locals {
-  instance_list = "[${aws_instance.webserver01.id},${aws_instance.webserver02.id}]"
+resource "aws_alb_target_group_attachment" "alb01" {
+    target_group_arn = "${aws_alb_target_group.alb.arn}"
+    port             = 80
+    target_id        = "${aws_instance.webserver01.id}"
 }
 
-resource "aws_alb_target_group_attachment" "alb" {
-  //count            = "${length(local.instance_list)}"
-  count            = 2
-  target_group_arn = "${aws_alb_target_group.alb.arn}"
-  //target_id        = "${local.instance_list[count.index]}"
-  target_id        = "${element(local.instance_list,count.index)}"
-  port             = 80
+resource "aws_alb_target_group_attachment" "alb02" {
+    target_group_arn = "${aws_alb_target_group.alb.arn}"
+    port             = 80
+    target_id        = "${aws_instance.webserver02.id}"
 }
+
+#locals {
+#  instance_list = "[${aws_instance.webserver01.id},${aws_instance.webserver02.id}]"
+#}
+
+#resource "aws_alb_target_group_attachment" "alb" {
+#  //count            = "${length(local.instance_list)}"
+#  count            = 2
+#  target_group_arn = "${aws_alb_target_group.alb.arn}"
+#  //target_id        = "${local.instance_list[count.index]}"
+#  target_id        = "${local.instance_list}"
+#  port             = 80
+#}
 
 resource "aws_ebs_volume" "volume_webserver01" {
     availability_zone = "${var.availability_zone01}"
