@@ -120,7 +120,7 @@ locals {
 
 resource "aws_alb_target_group_attachment" "alb" {
   //count            = "${length(local.instance_list)}"
-  count            = "${local.instance_list}"
+  count            = 2
   target_group_arn = "${aws_alb_target_group.alb.arn}"
   //target_id        = "${local.instance_list[count.index]}"
   target_id        = "${element(local.instance_list,count.index)}"
