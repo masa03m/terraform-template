@@ -114,6 +114,12 @@ resource "aws_alb_listener" "alb" {
 #  certificate_arn = aws_acm_certificate.example.arn
 #}
 
+variable "instance_list" {
+  type = "list"
+  default = ["${aws_instance.webserver01.id}","${aws_instance.webserver02.id}"]
+  description = "ALBに紐づけるインスタンスリスト"
+}
+
 resource "aws_alb_target_group_attachment" "alb" {
   count            = "${var.instance_list}"
   target_group_arn = "${aws_alb_target_group.alb.arn}"

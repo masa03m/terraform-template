@@ -65,12 +65,6 @@ variable "public_ssh_key_name" {
   default = "mcm-test-key"
 }
 
-variable "instance_list" {
-  type = "list"
-  default = ["${aws_instance.webserver01.id}","${aws_instance.webserver02.id}"]
-  description = "ALBに紐づけるインスタンスリスト"
-}
-
 #variable "public_ssh_key" {
 #  description = "Public SSH key used to connect to the virtual guest"
 #}
