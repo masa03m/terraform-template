@@ -68,8 +68,7 @@ variable "public_ssh_key_name" {
 variable "instance_list" {
   type = "list"
   default = ["${aws_instance.webserver01.id}","${aws_instance.webserver02.id}"]
-  description = "Push these instances to ALB"
-  hidden = "true"
+  description = "ALBに紐づけるインスタンスリスト"
 }
 
 #variable "public_ssh_key" {
