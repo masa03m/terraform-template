@@ -32,7 +32,7 @@ resource "aws_instance" "webserver01" {
   subnet_id         = "${var.subnet_id01}"
   vpc_security_group_ids = ["${var.security_group_id}"]
   tags {
-    Name            = "${var.webserver_name}01"
+    Name            = "${var.system_tag}-${var.webserver_name}01"
   }
 }
 
@@ -52,7 +52,7 @@ resource "aws_instance" "webserver02" {
   subnet_id         = "${var.subnet_id02}"
   vpc_security_group_ids = ["${var.security_group_id}"]
   tags {
-    Name            = "${var.webserver_name}02"
+    Name            = "${var.system_tag}-${var.webserver_name}02"
   }
 }
 
